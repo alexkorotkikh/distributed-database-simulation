@@ -48,6 +48,19 @@ class TestModel(unittest.TestCase):
 			validate_infocenters([[1, 2, 1], [2, 4, 2]], matrix)
 		except Exception:
 			self.fail("Shouldn't raise exception on valid data")
+
+	def test_validate_requests_valid(self):
+		try:
+			model = create_model("./example/matrix.csv", "./example/infocenters.csv")
+			model.validate_requests([[2,1,1]])
+		except Exception:
+			self.fail("Shouldn't raise exception on valid data")
+
+	def test_validate_requests_invalid(self):
+		model = create_model("./example/matrix.csv", "./example/infocenters.csv")
+		self.assertRaises(ValueError, model.validate_requests, [[8,1,1]])
+		self.assertRaises(ValueError, model.validate_requests, [[1,1,1]])
+		self.assertRaises(ValueError, model.validate_requests, [[2,2,1]])
 							
 	def test_create_model(self):
 		model = create_model("./example/matrix.csv", "./example/infocenters.csv")

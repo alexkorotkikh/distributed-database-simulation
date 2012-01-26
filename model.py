@@ -13,8 +13,20 @@ class Model(object):
 				self.nodes[i].infocenter = (row[1], row[2])
 
 	def imitate(self, data):
-		# TODO implement me
+		loaded = load_data(data)
+		validate_requests(loaded)
 		return Statistic()
+
+	def validate_requests(self, requests):
+		nodes = [row[0] for row in requests]
+		ics = [row[1] for row in requests]
+		times = [row[2] for row in requests]
+
+		validate(max(nodes) < len(self.nodes), "Node number {} is not presented in model".format(max(nodes)))
+		validate(not any([node in self.infocenters for node in nodes]), "There should be no calls from one infocenter to another")
+
+		validate(all([ic in self.infocenters for ic in ics]), "Not all nodes in a second column is an infocenter")
+
 
 class Node(object):
 	
@@ -27,7 +39,7 @@ def create_model(matrix_file, ic_file):
 	matrix_data = load_matrix_data(matrix_file)
 	matrix = parse_matrix(matrix_data)
 
-	infocenters = load_ic_data(ic_file)
+	infocenters = load_data(ic_file)
 	validate_infocenters(infocenters, matrix)
 
 	return Model(matrix, infocenters) if matrix and infocenters else None
@@ -35,7 +47,7 @@ def create_model(matrix_file, ic_file):
 def load_matrix_data(file):
 	return [row for row in reader(open(file, 'rb')) if not row[0].startswith("#")]
 
-def load_ic_data(file):
+def load_data(file):
 	return [[int(num) for num in row] for row in load_matrix_data(file)]
 
 def parse_matrix(data):
@@ -75,6 +87,7 @@ def validate_infocenters(infocenters, matrix):
 	validate(max(ic_nums) + 1 <= len(matrix), 
 			"There are no node with the number {} in a model, it cannot be an infocenter".format(max(ic_nums) + 1))
 	validate(len(infocenters) < len(matrix), "Not every node can be an infocenter")
+
 
 
 if __name__ == "__main__":
