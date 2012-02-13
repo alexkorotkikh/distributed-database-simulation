@@ -11,10 +11,12 @@ class Model(object):
 
     def imitate(self, req_matrix):
         requests = [Request(row[0], row[1], row[2]) for row in req_matrix]
+
+        # TODO fix sort
         requests.sort()
 
         # start immitating
-        stat = Statistic(self.nodes, self.infocenters)
+        stat = Statistic(self.nodes)
 
         for request in requests:
             stat.add_req(request)
