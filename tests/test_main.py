@@ -7,6 +7,13 @@ class TestLoadData(TestCase):
     def setUp(self):
         self.app = Application()
 
+    def test_create_parser(self):
+        options = self.app.get_options(None)
+        self.assertEquals("./example/nodes.csv", options.nodes)
+        self.assertEquals("./example/infocenters.csv", options.infocenters)
+        self.assertEquals("./example/requests.csv", options.requests)
+
+
     def test_load_matrix_data(self):
         file_name = "./example/nodes.csv"
         matrix = self.app.load_matrix_data(file_name)
