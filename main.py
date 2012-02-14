@@ -1,7 +1,6 @@
 import sys
 from _csv import reader
 from optparse import OptionParser
-from model import create_model
 
 __author__ = 'alexander.korotkikh'
 

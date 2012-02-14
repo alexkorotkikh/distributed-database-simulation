@@ -15,7 +15,7 @@ class TestLoadData(TestCase):
 
 
     def test_load_matrix_data(self):
-        file_name = "./example/nodes.csv"
+        file_name = "../example/nodes.csv"
         matrix = self.app.load_matrix_data(file_name)
 
         self.assertEqual(len(matrix), 7)
