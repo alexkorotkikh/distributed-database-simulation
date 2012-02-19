@@ -39,3 +39,16 @@ class TestTimeline(TestCase):
         self.assertEquals(len(states), 2)
         self.assertTrue(all([s.node == "destination_node" for s in states]))
 
+
+    def test_all_states_for_moment(self):
+    # given
+        self.timeline.add_state(State("destination_node", 1, 3))
+        self.timeline.add_state(State("destination_node", 4, 6))
+        self.timeline.add_state(State("another_node", 4, 6))
+
+        # when
+        states = self.timeline.all_states_for(moment=5)
+
+        # then
+        self.assertEquals(len(states), 2)
+        self.assertListEqual(sorted([s.node for s in states]), ["another_node", "destination_node"])
