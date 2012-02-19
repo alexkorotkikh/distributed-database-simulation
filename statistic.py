@@ -2,8 +2,9 @@ import random
 
 STAT_STRING = """
 Node #{node_id}:
-\tNumber of requests:\t{request_number}
-\tUtilization:\t\t{util}\n
+\tType:\t\t\t\t\t{type}
+\tNumber of requests:\t\t{request_number}
+\tUtilization:\t\t\t{util}\n
 """
 
 class Statistic(object):
@@ -47,7 +48,8 @@ class Statistic(object):
 
     def fill_stat_string(self, node_id, states):
         util = sum([s.end - s.start for s in states]) / float(len(self.timeline.time))
-        return STAT_STRING.format(node_id=node_id, request_number=len(states), util=util)
+        return STAT_STRING.format(node_id=node_id, type=self.nodes[node_id].__class__.__name__,
+            request_number=len(states), util=util)
 
 
 class Timeline:
