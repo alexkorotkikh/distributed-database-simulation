@@ -1,5 +1,11 @@
 import random
 
+STAT_STRING = """
+Node #{node_id}:
+\tNumber of requests:\t{request_number}
+\tUtilization:\t\t{util}\n
+"""
+
 class Statistic(object):
     def __init__(self, nodes):
         self.nodes = nodes
@@ -23,19 +29,25 @@ class Statistic(object):
     def create_new_state(self, request):
         new_state = State()
         new_state.start = request.start
-        average = request.dest.average
-        deviation = request.dest.deviation
+        average = self.nodes[request.dest].average
+        deviation = self.nodes[request.dest].deviation
         new_state.end = new_state.start + random.randint(average - deviation, average + deviation)
         new_state.node = request.dest
         return new_state
 
 
     def to_report(self):
-        # TODO
-        pass
+        return "\n".join(self.get_node_stats(node) for node in self.nodes)
+
 
     def get_node_stats(self, node):
-        states = self.timeline.all_states_for(node)
+        node_id = self.nodes.index(node)
+        states = self.timeline.all_states_for(node_id)
+        return self.fill_stat_string(node_id, states)
+
+    def fill_stat_string(self, node_id, states):
+        util = sum([s.end - s.start for s in states]) / float(len(self.timeline.time))
+        return STAT_STRING.format(node_id=node_id, request_number=len(states), util=util)
 
 
 class Timeline:
@@ -47,7 +59,7 @@ class Timeline:
         return self.time[t].get(dest)
 
     def add_time(self):
-        self.time.extend([dict() for i in range(101)])
+        self.time.extend([dict() for i in range(100)])
 
 
     def add_state(self, state):
@@ -62,8 +74,8 @@ class Timeline:
         for t in time:
             state_dict = self.time[t]
             if state_dict:
-                states_to_add = [state_dict.get(node)] if node else state_dict.values()
-                states.extend([s for s in states_to_add if s not in states])
+                states_to_add = [state_dict.get(node)] if node is not None else state_dict.values()
+                states.extend([s for s in states_to_add if s and s not in states])
 
         return states
 

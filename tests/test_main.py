@@ -60,7 +60,7 @@ class TestLoadData(TestCase):
                 [0, 0, 0]
             ]
             self.app.infocenters = [[2, 5, 2]]
-            self.app.validate_request_matrix([[1, 2, 1]])
+            self.app.validate_request_matrix([[3, 2, 1]])
         except Exception:
             self.fail("Shouldn't raise exception on valid data")
 

@@ -1,6 +1,7 @@
 import sys
 from _csv import reader
 from optparse import OptionParser
+from model import Model
 
 __author__ = 'alexander.korotkikh'
 
@@ -13,7 +14,7 @@ class Application:
 
             self.nodes = self.load_nodes(options.nodes)
             self.infocenters = self.load_infocenters(options.infocenters)
-            model = create_model(self.nodes, self.infocenters)
+            model = Model(self.nodes, self.infocenters)
 
             self.requests = self.load_requests(options.requests)
             statistic = model.imitate(self.requests)
@@ -89,7 +90,7 @@ class Application:
         sources = [row[0] for row in matrix]
         destinations = [row[1] for row in matrix]
 
-        self.validate(max(sources) < len(self.nodes),
+        self.validate(max(sources) <= len(self.nodes),
             "Node number {} is not presented in model".format(max(sources)))
 
         ic_numbers = [row[0] for row in self.infocenters]
