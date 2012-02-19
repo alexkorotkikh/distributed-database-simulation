@@ -3,16 +3,20 @@ import random
 STAT_STRING = """
 Node #{node_id}:
 \tType:\t\t\t\t\t{type}
-\tNumber of requests:\t\t{request_number}
-\tUtilization:\t\t\t{util}\n
+\tRequests sent:\t\t\t{req_sent}
+\tRequests proceed:\t\t{req_proc}
+\tUtilization:\t\t\t{util}
 """
 
 class Statistic(object):
     def __init__(self, nodes):
         self.nodes = nodes
+        self.requests = []
         self.timeline = Timeline()
 
     def add_req(self, request):
+        self.requests.append(request) if request not in self.requests else None
+
         existing_state = self.timeline.state_for(request.dest, request.start)
         if existing_state:
             request = self.shift_request(request, existing_state)
@@ -47,9 +51,12 @@ class Statistic(object):
         return self.fill_stat_string(node_id, states)
 
     def fill_stat_string(self, node_id, states):
-        util = sum([s.end - s.start for s in states]) / float(len(self.timeline.time))
-        return STAT_STRING.format(node_id=node_id, type=self.nodes[node_id].__class__.__name__,
-            request_number=len(states), util=util)
+        return STAT_STRING.format(
+            node_id=node_id,
+            type=self.nodes[node_id].__class__.__name__,
+            req_sent=len([r for r in self.requests if r.src == node_id]),
+            req_proc=len(states),
+            util=(sum([s.end - s.start for s in states]) / float(len(self.timeline.time))))
 
 
 class Timeline:
