@@ -21,7 +21,7 @@ class Application:
         except Exception as e:
             print e.message
             print "### Imitation finished unsuccessfully because of error ###"
-            return;
+            return
 
         print "### Imitation finished successfully ###"
 

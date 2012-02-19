@@ -10,15 +10,12 @@ class TestTimeline(TestCase):
 
     def test_add_state(self):
         # given
-        state = State()
-        state.node = "destination_node"
-        state.start = 1
-        state.end = 3
+        state = State("destination_node", 1, 3)
 
-        #when
+        # when
         self.timeline.add_state(state)
 
-        #then
+        # then
         self.assertEquals(self.timeline.state_for("destination_node", 1), state)
         self.assertEquals(self.timeline.state_for("destination_node", 2), state)
         self.assertEquals(self.timeline.state_for("destination_node", 3), state)
@@ -28,4 +25,17 @@ class TestTimeline(TestCase):
 
         self.assertIsNone(self.timeline.state_for("wrong_node", 3))
 
+
+    def test_all_states_for_node(self):
+        # given
+        self.timeline.add_state(State("destination_node", 1, 3))
+        self.timeline.add_state(State("destination_node", 4, 6))
+        self.timeline.add_state(State("another_node", 4, 6))
+
+        # when
+        states = self.timeline.all_states_for("destination_node")
+
+        # then
+        self.assertEquals(len(states), 2)
+        self.assertTrue(all([s.node == "destination_node" for s in states]))
 
