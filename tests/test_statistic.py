@@ -56,6 +56,6 @@ class TestStatistic(TestCase):
 
         #then
         util = ((8 - 3) + (15 - 9)) / float(100)
-        expected = STAT_STRING.format(node_id=node_id, type="Infocenter", request_number=2, util=util)
+        expected = STAT_STRING.format(node_id=node_id, type="Infocenter", req_proc=2, req_sent=0, util=util)
         self.assertEquals(actual, expected)
 
