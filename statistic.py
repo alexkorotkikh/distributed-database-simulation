@@ -18,6 +18,9 @@ class Statistic(object):
             self.timeline.add_random_unavailabilities(nodes)
 
     def add_req(self, request):
+        if request.start > len(self.timeline.time) - 50:
+            return
+
         self.requests.append(request) if request not in self.requests else None
 
         existing_state = self.timeline.state_for(request.dest, request.start)
@@ -72,7 +75,7 @@ class Timeline:
         return self.time[t].get(dest)
 
     def add_time(self):
-        self.time.extend([dict() for i in range(100)])
+        self.time.extend([dict() for i in range(1000)])
 
 
     def add_state(self, state):
@@ -94,7 +97,7 @@ class Timeline:
 
     def add_random_unavailabilities(self, nodes):
         for i in range(len(nodes)):
-            length = random.randint(0, 10)
+            length = random.randint(0, 100)
             start = random.randint(0, len(self.time) - length)
             state = Unavailability(i, start, start + length)
             self.add_state(state)

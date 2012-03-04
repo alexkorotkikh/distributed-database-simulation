@@ -9,8 +9,9 @@ class Model(object):
         for i in range(len(nodes)):
             self.nodes[i].nodes = [self.nodes[j] for j in nodes[i] if j == 1]
 
+
     def imitate(self, req_matrix):
-        requests = [Request(row[0], row[1], row[2]) for row in req_matrix]
+        requests = self.create_request_list(req_matrix)
 
         requests.sort(lambda x, y: x.start - y.start)
 
@@ -21,6 +22,19 @@ class Model(object):
             stat.add_req(request)
 
         return stat
+
+
+    def create_request_list(self, req_matrix):
+        def list_portion(req_matrix):
+            return [Request(row[0], row[1], row[2]) for row in req_matrix]
+
+        requests = list_portion(req_matrix)
+        while requests[-1].start < 1000:
+            new_req_matrix = [[row[0], row[1], row[2] + row[3], row[3]] for row in req_matrix]
+            requests.extend(list_portion(new_req_matrix))
+            req_matrix = new_req_matrix
+
+        return requests
 
 
 class Node(object):
