@@ -27,7 +27,7 @@ class TestStatistic(TestCase):
     def test_add_req_with_intersection(self):
         # given
         dest = Infocenter(10, 3)
-        self.statistic = Statistic([Node(), Node(), dest])
+        self.statistic = Statistic([Node(), Node(), dest], False)
 
         first = Request(0, 2, 1)
         second = Request(1, 2, 2)
@@ -46,7 +46,7 @@ class TestStatistic(TestCase):
 
     def test_fill_stat_string(self):
         #given
-        self.statistic = Statistic([Node(), Infocenter(2, 1)])
+        self.statistic = Statistic([Node(), Infocenter(2, 1)], False)
 
         node_id = 1
         states = [State(node_id, 3, 8), State(node_id, 9, 15)]
@@ -56,6 +56,6 @@ class TestStatistic(TestCase):
 
         #then
         util = ((8 - 3) + (15 - 9)) / float(100)
-        expected = STAT_STRING.format(node_id=node_id, type="Infocenter", req_proc=2, req_sent=0, util=util)
+        expected = STAT_STRING.format(node_id=node_id, type="Infocenter", req_proc=2, req_sent=0, util=util, avail=1.0)
         self.assertEquals(actual, expected)
 

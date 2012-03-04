@@ -10,11 +10,12 @@ Node #{node_id}:
 """
 
 class Statistic(object):
-    def __init__(self, nodes):
+    def __init__(self, nodes, add_unavailavility=True):
         self.nodes = nodes
         self.requests = []
         self.timeline = Timeline()
-        self.timeline.add_random_unavailabilities(nodes)
+        if add_unavailavility:
+            self.timeline.add_random_unavailabilities(nodes)
 
     def add_req(self, request):
         self.requests.append(request) if request not in self.requests else None
