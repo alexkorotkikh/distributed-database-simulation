@@ -1,6 +1,7 @@
 import sys
 from _csv import reader
 from optparse import OptionParser
+from datetime import datetime
 from model import Model
 
 __author__ = 'alexander.korotkikh'
@@ -8,7 +9,7 @@ __author__ = 'alexander.korotkikh'
 class Application:
     def start(self, args):
         print "### Imitation started ###"
-
+        start = datetime.now().microsecond
         try:
             options = self.get_options(args)
 
@@ -24,6 +25,7 @@ class Application:
             print "### Imitation finished unsuccessfully because of error ###"
             return
 
+        print "Immitation time {} seconds".format((datetime.now().microsecond - start) / (10.0 ** 6))
         print "### Imitation finished successfully ###"
 
 
