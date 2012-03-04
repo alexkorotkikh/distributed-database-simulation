@@ -2,10 +2,11 @@ import random
 
 STAT_STRING = """
 Node #{node_id}:
-\tType:\t\t\t\t\t{type}
-\tRequests sent:\t\t\t{req_sent}
-\tRequests proceed:\t\t{req_proc}
-\tUtilization:\t\t\t{util}
+\tType:\t\t\t\t{type}
+\tRequests sent:\t\t{req_sent}
+\tRequests proceed:\t{req_proc}
+\tUtilization:\t\t{util}
+\tAvailability:\t\t{avail}
 """
 
 class Statistic(object):
@@ -13,6 +14,7 @@ class Statistic(object):
         self.nodes = nodes
         self.requests = []
         self.timeline = Timeline()
+        self.timeline.add_random_unavailabilities(nodes)
 
     def add_req(self, request):
         self.requests.append(request) if request not in self.requests else None
@@ -56,7 +58,8 @@ class Statistic(object):
             type=self.nodes[node_id].__class__.__name__,
             req_sent=len([r for r in self.requests if r.src == node_id]),
             req_proc=len(states),
-            util=(sum([s.end - s.start for s in states]) / float(len(self.timeline.time))))
+            util=(sum([s.end - s.start for s in states if not s.isUnavailable]) / float(len(self.timeline.time))),
+            avail=(1 - sum([s.end - s.start for s in states if s.isUnavailable]) / float(len(self.timeline.time))))
 
 
 class Timeline:
@@ -88,9 +91,25 @@ class Timeline:
 
         return states
 
+    def add_random_unavailabilities(self, nodes):
+        for i in range(len(nodes)):
+            length = random.randint(0, 10)
+            start = random.randint(0, len(self.time) - length)
+            state = Unavailability(i, start, start + length)
+            self.add_state(state)
+
 
 class State:
     def __init__(self, node=None, start=None, end=None):
         self.node = node
         self.start = start
         self.end = end
+        self.isUnavailable = False
+
+
+class Unavailability(State):
+    def __init__(self, node=None, start=None, end=None):
+        self.node = node
+        self.start = start
+        self.end = end
+        self.isUnavailable = True
