@@ -21,8 +21,6 @@ class Statistic(object):
         if request.start > len(self.timeline.time) - 50:
             return
 
-        self.requests.append(request) if request not in self.requests else None
-
         existing_state = self.timeline.state_for(request.dest, request.start)
         if existing_state:
             request = self.shift_request(request, existing_state)
@@ -30,6 +28,7 @@ class Statistic(object):
         else:
             new_state = self.create_new_state(request)
             self.timeline.add_state(new_state)
+            self.requests.append(request)
 
 
     def shift_request(self, request, state):
@@ -61,7 +60,7 @@ class Statistic(object):
             node_id=node_id,
             type=self.nodes[node_id].__class__.__name__,
             req_sent=len([r for r in self.requests if r.src == node_id]),
-            req_proc=len(states),
+            req_proc=len([s for s in states if not s.isUnavailable]),
             util=(sum([s.end - s.start for s in states if not s.isUnavailable]) / float(len(self.timeline.time))),
             avail=(1 - sum([s.end - s.start for s in states if s.isUnavailable]) / float(len(self.timeline.time))))
 
