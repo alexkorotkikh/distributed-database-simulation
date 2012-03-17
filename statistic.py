@@ -2,7 +2,7 @@ import random
 
 STAT_STRING = """
 Node #{node_id}:
-\tType:\t\t\t\t{type}
+\tType:\t\t\t{type}
 \tRequests sent:\t\t{req_sent}
 \tRequests proceed:\t{req_proc}
 \tUtilization:\t\t{util}
@@ -18,7 +18,9 @@ class Statistic(object):
             self.timeline.add_random_unavailabilities(nodes)
 
     def add_req(self, request):
-        if request.start > len(self.timeline.time) - 50:
+        max_start_time = len(self.timeline.time)\
+        - (self.nodes[request.dest].average + self.nodes[request.dest].deviation)
+        if request.start > max_start_time:
             return
 
         existing_state = self.timeline.state_for(request.dest, request.start)
@@ -32,7 +34,7 @@ class Statistic(object):
 
 
     def shift_request(self, request, state):
-        request.start = state.end + 1
+        request.start = state.end
         return request
 
 
@@ -61,8 +63,8 @@ class Statistic(object):
             type=self.nodes[node_id].__class__.__name__,
             req_sent=len([r for r in self.requests if r.src == node_id]),
             req_proc=len([s for s in states if not s.isUnavailable]),
-            util=(sum([s.end - s.start for s in states if not s.isUnavailable]) / float(len(self.timeline.time))),
-            avail=(1 - sum([s.end - s.start for s in states if s.isUnavailable]) / float(len(self.timeline.time))))
+            util=sum([s.end - s.start for s in states if not s.isUnavailable]) / float(len(self.timeline.time)),
+            avail=1 - sum([s.end - s.start for s in states if s.isUnavailable]) / float(len(self.timeline.time)))
 
 
 class Timeline:
@@ -78,7 +80,7 @@ class Timeline:
 
 
     def add_state(self, state):
-        for t in range(state.start, state.end + 1):
+        for t in range(state.start, state.end):
             dict = self.time[t]
             dict[state.node] = state
 

@@ -25,7 +25,7 @@ class Application:
             print "### Imitation finished unsuccessfully because of error ###"
             return
 
-        print "Immitation time {} seconds".format((datetime.now().microsecond - start) / (10.0 ** 6))
+        print "Immitation time {} seconds".format(abs(datetime.now().microsecond - start) / (10.0 ** 6))
         print "### Imitation finished successfully ###"
 
 
