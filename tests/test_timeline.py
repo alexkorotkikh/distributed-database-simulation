@@ -18,12 +18,11 @@ class TestTimeline(TestCase):
         # then
         self.assertEquals(self.timeline.state_for("destination_node", 1), state)
         self.assertEquals(self.timeline.state_for("destination_node", 2), state)
-        self.assertEquals(self.timeline.state_for("destination_node", 3), state)
 
         self.assertIsNone(self.timeline.state_for("destination_node", 0))
-        self.assertIsNone(self.timeline.state_for("destination_node", 4))
+        self.assertIsNone(self.timeline.state_for("destination_node", 3))
 
-        self.assertIsNone(self.timeline.state_for("wrong_node", 3))
+        self.assertIsNone(self.timeline.state_for("wrong_node", 1))
 
 
     def test_all_states_for_node(self):

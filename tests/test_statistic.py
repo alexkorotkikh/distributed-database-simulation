@@ -41,7 +41,7 @@ class TestStatistic(TestCase):
         second_state = self.statistic.timeline.state_for(2, first_state.end + 1)
 
         self.assertIsNotNone(second_state)
-        self.assertEquals(first_state.end + 1, second_state.start)
+        self.assertEquals(first_state.end, second_state.start)
 
 
     def test_fill_stat_string(self):
@@ -55,7 +55,7 @@ class TestStatistic(TestCase):
         actual = self.statistic.fill_stat_string(node_id, states)
 
         #then
-        util = ((8 - 3) + (15 - 9)) / float(100)
+        util = ((8 - 3) + (15 - 9)) / float(1000)
         expected = STAT_STRING.format(node_id=node_id, type="Infocenter", req_proc=2, req_sent=0, util=util, avail=1.0)
         self.assertEquals(actual, expected)
 
